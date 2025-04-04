@@ -62,4 +62,14 @@ public class ReportService {
     public void deleteReport(Integer id) {
         reportRepository.deleteById(id);
     }
+
+    /*
+     * レコード1件取得
+     */
+    public ReportForm editReport(Integer id) {
+        List<Report> results = new ArrayList<>();
+        results.add((Report) reportRepository.findById(id).orElse(null));
+        List<ReportForm> reports = setReportForm(results);
+        return reports.get(0);
+    }
 }
