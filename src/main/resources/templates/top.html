@@ -30,6 +30,23 @@
                 <input type="button" value="編集">
             </a>
         </div>
+        <div class="message-icon" th:each="text : ${texts}">
+            <div th:if="${text.reportId} == ${content.id}">
+                <div>
+                    ID : <span th:text="${text.id}"/>
+                </div>
+                <div class="text">
+                    コメント : <span th:text="${text.text}"/>
+                </div>
+            </div>
+        </div>
+        <form method="post" action="/comment/add" th:object="${formModel}">
+            <div class="form-area">
+                <input type="hidden" name="reportId" th:value="${content.id}" />
+                <textarea class="tweet-box" th:field="*{text}" size="20" maxlength="200" ></textarea><br/>
+                <input type="submit" value="投稿" />
+            </div>
+        </form>
     </div>
 </div>
 </body>

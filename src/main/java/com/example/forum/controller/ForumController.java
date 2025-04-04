@@ -1,6 +1,8 @@
 package com.example.forum.controller;
 
+import com.example.forum.controller.form.CommentForm;
 import com.example.forum.controller.form.ReportForm;
+import com.example.forum.service.CommentService;
 import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,18 +16,29 @@ public class ForumController {
     @Autowired
     ReportService reportService;
 
+    @Autowired
+    CommentService commentService;
+
     /*
      * 投稿内容表示処理
      */
     @GetMapping
     public ModelAndView top() {
         ModelAndView mav = new ModelAndView();
+        // form用の空のentityを準備
+        CommentForm commentForm = new CommentForm();
         // 投稿を全件取得
         List<ReportForm> contentData = reportService.findAllReport();
+        // コメントを全件取得
+        List<CommentForm> textData = commentService.findAllComment();
         // 画面遷移先を指定
         mav.setViewName("/top");
         // 投稿データオブジェクトを保管
         mav.addObject("contents", contentData);
+        // コメントデータオブジェクトを保管
+        mav.addObject("texts", textData);
+        // 準備した空のFormを保管
+        mav.addObject("formModel", commentForm);
         return mav;
     }
 
@@ -91,6 +104,16 @@ public class ForumController {
         report.setId(id);
         // 編集した投稿を更新
         reportService.saveReport(report);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
+
+    /*
+     * 新規コメント処理
+     */
+    @PostMapping("/comment/add")
+    public ModelAndView addText(@ModelAttribute("formModel") CommentForm commentForm){
+        commentService.saveComment(commentForm);
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
