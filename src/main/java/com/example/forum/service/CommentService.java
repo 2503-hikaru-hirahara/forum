@@ -22,6 +22,7 @@ public class CommentService {
         List<CommentForm> comments = setCommentForm(results);
         return comments;
     }
+
     /*
      * DBから取得したデータをFormに設定
      */

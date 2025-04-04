@@ -22,6 +22,7 @@ public class ReportService {
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
+
     /*
      * DBから取得したデータをFormに設定
      */
