@@ -119,6 +119,16 @@ public class ForumController {
     }
 
     /*
+     * コメント削除処理
+     */
+    @DeleteMapping("/comment/delete/{id}")
+    public ModelAndView deleteText(@PathVariable Integer id) {
+        // テーブルから投稿を削除
+        commentService.deleteComment(id);
+        return new ModelAndView("redirect:/");
+    }
+    
+    /*
      * 編集画面表示処理
      */
     @GetMapping("/comment/edit/{id}")
@@ -138,7 +148,7 @@ public class ForumController {
      */
     @PutMapping("/comment/update/{id}")
     public ModelAndView updateText(@PathVariable Integer id,
-                                      @ModelAttribute("formModel") CommentForm comment) {
+                                   @ModelAttribute("formModel") CommentForm comment) {
         // UrlParameterのidを更新するentityにセット
         comment.setId(id);
         // 編集した投稿を更新

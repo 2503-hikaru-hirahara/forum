@@ -62,6 +62,13 @@ public class CommentService {
     }
 
     /*
+     * レコード削除
+     */
+    public void deleteComment(Integer id) {
+        commentRepository.deleteById(id);
+    }
+
+    /*
      * レコード1件取得
      */
     public CommentForm editComment(Integer id) {
