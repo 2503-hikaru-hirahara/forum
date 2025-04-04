@@ -55,5 +55,11 @@ public class ReportService {
         report.setContent(reqReport.getContent());
         return report;
     }
-}
 
+    /*
+     * レコード削除
+     */
+    public void deleteReport(Integer id) {
+        reportRepository.deleteById(id);
+    }
+}
