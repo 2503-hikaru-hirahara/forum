@@ -30,24 +30,22 @@
                 <input type="button" value="編集">
             </a>
         </div>
-        <div class="message-icon" th:each="text : ${texts}">
-            <div th:if="${text.reportId} == ${content.id}">
-                <div>
-                    ID : <span th:text="${text.id}"/>
-                </div>
-                <div class="text">
-                    コメント : <span th:text="${text.text}"/>
-                </div>
-                <div class="delete-button">
-                    <form th:action="@{/comment/delete/{id}(id=${text.id})}" th:method="delete">
-                        <input type="submit" value="削除">
-                    </form>
-                </div>
-                <div class="edit-button">
-                    <a th:href="@{/comment/edit/{id}(id=${text.id})}">
-                        <input type="button" value="編集">
-                    </a>
-                </div>
+        <div class="comment-icon" th:each="text : ${texts}" th:if="${text.reportId} == ${content.id}">
+            <div>
+                ID : <span th:text="${text.id}"/>
+            </div>
+            <div class="text">
+                コメント : <span th:text="${text.text}"/>
+            </div>
+            <div class="delete-button">
+                <form th:action="@{/comment/delete/{id}(id=${text.id})}" th:method="delete">
+                    <input type="submit" value="削除">
+                </form>
+            </div>
+            <div class="edit-button">
+                <a th:href="@{/comment/edit/{id}(id=${text.id})}">
+                    <input type="button" value="編集">
+                </a>
             </div>
         </div>
         <form method="post" action="/comment/add" th:object="${formModel}">

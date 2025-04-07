@@ -116,6 +116,12 @@ a.profile .account {
 	font: small-caption;
 }
 
+.comment-icon {
+    margin-top: 5px;
+    border-left: 3px double;
+    padding-left: 2px;
+}
+
 .copyright {
 	width: 250px;
 	margin: 0 auto;
