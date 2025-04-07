@@ -37,6 +37,8 @@ public class CommentService {
             comment.setId(result.getId());
             comment.setText(result.getText());
             comment.setReportId(result.getReportId());
+            comment.setCreatedDate(result.getCreatedDate());
+            comment.setUpdatedDate(result.getUpdatedDate());
             comments.add(comment);
         }
         return comments;
