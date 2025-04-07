@@ -6,6 +6,8 @@ import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class ReportService {
             Report result = results.get(i);
             report.setId(result.getId());
             report.setContent(result.getContent());
+            report.setCreatedDate(result.getCreatedDate());
+            report.setUpdatedDate(result.getUpdatedDate());
             reports.add(report);
         }
         return reports;
@@ -72,5 +76,29 @@ public class ReportService {
         results.add((Report) reportRepository.findById(id).orElse(null));
         List<ReportForm> reports = setReportForm(results);
         return reports.get(0);
+    }
+
+    /*
+     * レコード(日付で絞り込み)取得処理
+     */
+    public List<ReportForm> findByUpdatedDateBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime;
+        LocalDateTime endDateTime;
+
+        if (start != null) {
+            startDateTime = start.atStartOfDay();
+        } else {
+            startDateTime = LocalDate.of(1950,1,1).atStartOfDay();
+        }
+
+        if (end != null) {
+            endDateTime = end.plusDays(1).atStartOfDay().minusNanos(1);
+        } else {
+            endDateTime = LocalDateTime.now();
+        }
+
+        List<Report> results = reportRepository.findByUpdatedDateBetweenOrderByUpdatedDateDesc(startDateTime, endDateTime);
+        List<ReportForm> reports = setReportForm(results);
+        return reports;
     }
 }

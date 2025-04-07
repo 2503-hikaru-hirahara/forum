@@ -13,12 +13,23 @@
     <a href="/new">
         <button class="new-button" type="button">新規投稿</button>
     </a>
+    <form method="get" action="/search">
+        日付：
+        <input name="start" type="date"/>
+        ～
+        <input name="end" type="date"/>
+        <input type="submit" value="絞り込み" />
+    </form>
     <div class="message-icon" th:each="content : ${contents}">
         <div>
             ID : <span th:text="${content.id}"/>
         </div>
         <div class="text">
             投稿 : <span th:text="${content.content}"/>
+        </div>
+        <div class="date">
+            <span th:text="${#temporals.format(content.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"/>
+            <span th:if="${content.updatedDate} != ${content.createdDate}">更新済み</span>
         </div>
         <div class="delete-button">
             <form th:action="@{/delete/{id}(id=${content.id})}" th:method="delete">
@@ -36,6 +47,10 @@
             </div>
             <div class="text">
                 コメント : <span th:text="${text.text}"/>
+            </div>
+            <div class="date">
+                <span th:text="${#temporals.format(text.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"/>
+                <span th:if="${text.updatedDate} != ${text.createdDate}">更新済み</span>
             </div>
             <div class="delete-button">
                 <form th:action="@{/comment/delete/{id}(id=${text.id})}" th:method="delete">
