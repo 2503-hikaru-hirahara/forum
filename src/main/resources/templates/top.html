@@ -65,6 +65,10 @@
         </div>
         <form method="post" action="/comment/add" th:object="${formModel}">
             <div class="form-area">
+                <label>コメント内容</label>
+                <div class="errorMessages" th:object="${formModel}" th:if="${#fields.hasErrors('text')} and ${formModel.reportId} == ${content.id}">
+                    <p th:errors="*{text}">
+                </div>
                 <input type="hidden" name="reportId" th:value="${content.id}"/>
                 <textarea class="tweet-box" th:field="*{text}" size="20" maxlength="200"></textarea><br/>
                 <input type="submit" value="投稿"/>
