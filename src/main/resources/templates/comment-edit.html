@@ -13,8 +13,8 @@
     <form th:action="@{/comment/update/{id}(id=${formModel.id})}" th:object="${formModel}" th:method="put">
         <div class="form-area">
             <label>コメント内容</label>
-            <div class="errorMessages" th:if="${#fields.hasErrors('text')}">
-                <p th:errors="*{text}">
+            <div class="errorMessages" th:each="errorMessage : ${errorMessages}">
+                <span th:text="${errorMessage}"></span>
             </div>
             <input type="hidden" name="reportId" th:value="${formModel.reportId}"/>
             <textarea class="tweet-box" name="text" th:field="*{text}" size="20" maxlength="200"/></textarea><br/>

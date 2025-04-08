@@ -11,9 +11,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -68,12 +69,15 @@ public class ForumController {
      */
     @PostMapping("/add")
     public ModelAndView addContent(@ModelAttribute("formModel") @Validated ReportForm reportForm,
-                                   BindingResult result) {
+                                   BindingResult result,
+                                   RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
-            mav.setViewName("/new");
-            mav.addObject("formModel", reportForm);
-            return mav;
+            List<String> errorMessages = new ArrayList<String>();
+            for (FieldError error : result.getFieldErrors()) {
+                 errorMessages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/new");
         }
         // 投稿をテーブルに格納
         reportService.saveReport(reportForm);
@@ -113,14 +117,17 @@ public class ForumController {
     @PutMapping("/update/{id}")
     public ModelAndView updateContent(@PathVariable Integer id,
                                       @ModelAttribute("formModel") @Validated ReportForm report,
-                                      BindingResult result) {
+                                      BindingResult result,
+                                      RedirectAttributes redirectAttributes) {
         // UrlParameterのidを更新するentityにセット
         report.setId(id);
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
-            mav.setViewName("/edit");
-            mav.addObject("formModel", report);
-            return mav;
+            List<String> errorMessages = new ArrayList<String>();
+            for (FieldError error : result.getFieldErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/edit/" + id);
         }
         // 編集した投稿を更新
         reportService.saveReport(report);
@@ -133,16 +140,16 @@ public class ForumController {
      */
     @PostMapping("/comment/add")
     public ModelAndView addText(@ModelAttribute("formModel") @Validated CommentForm commentForm,
-                                BindingResult result) {
+                                BindingResult result,
+                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
-            //List<ReportForm> contentData = reportService.findAllReport();
-            List<CommentForm> textData = commentService.findAllComment();
-            mav.setViewName("top");
-            //mav.addObject("contents", contentData);
-            mav.addObject("texts", textData);
-            mav.addObject("formModel", commentForm);
-            return mav;
+            List<String> errorMessages = new ArrayList<String>();
+            for (FieldError error : result.getFieldErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("formReportId", commentForm.getReportId());
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/");
         }
         commentService.saveComment(commentForm);
         // rootへリダイレクト
@@ -180,14 +187,17 @@ public class ForumController {
     @PutMapping("/comment/update/{id}")
     public ModelAndView updateText(@PathVariable Integer id,
                                    @ModelAttribute("formModel") @Validated CommentForm comment,
-                                   BindingResult result) {
+                                   BindingResult result,
+                                   RedirectAttributes redirectAttributes) {
         // UrlParameterのidを更新するentityにセット
         comment.setId(id);
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
-            mav.setViewName("/comment-edit");
-            mav.addObject("formModel", comment);
-            return mav;
+            List<String> errorMessages = new ArrayList<String>();
+            for (FieldError error : result.getFieldErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/comment/edit/" + id);
         }
         // 編集した投稿を更新
         commentService.saveComment(comment);
