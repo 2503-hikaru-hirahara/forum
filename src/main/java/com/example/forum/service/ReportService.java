@@ -17,10 +17,25 @@ public class ReportService {
     ReportRepository reportRepository;
 
     /*
-     * レコード全件取得処理
+     * レコード取得処理(日付で絞り込み)
      */
-    public List<ReportForm> findAllReport() {
-        List<Report> results = reportRepository.findAllByOrderByUpdatedDateDesc();
+    public List<ReportForm> findByUpdatedDateBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime;
+        LocalDateTime endDateTime;
+
+        if (start != null) {
+            startDateTime = start.atStartOfDay();
+        } else {
+            startDateTime = LocalDate.of(1950,1,1).atStartOfDay();
+        }
+
+        if (end != null) {
+            endDateTime = end.plusDays(1).atStartOfDay().minusNanos(1);
+        } else {
+            endDateTime = LocalDateTime.now();
+        }
+
+        List<Report> results = reportRepository.findByUpdatedDateBetweenOrderByUpdatedDateDesc(startDateTime, endDateTime);
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -76,29 +91,5 @@ public class ReportService {
         results.add((Report) reportRepository.findById(id).orElse(null));
         List<ReportForm> reports = setReportForm(results);
         return reports.get(0);
-    }
-
-    /*
-     * レコード(日付で絞り込み)取得処理
-     */
-    public List<ReportForm> findByUpdatedDateBetween(LocalDate start, LocalDate end) {
-        LocalDateTime startDateTime;
-        LocalDateTime endDateTime;
-
-        if (start != null) {
-            startDateTime = start.atStartOfDay();
-        } else {
-            startDateTime = LocalDate.of(1950,1,1).atStartOfDay();
-        }
-
-        if (end != null) {
-            endDateTime = end.plusDays(1).atStartOfDay().minusNanos(1);
-        } else {
-            endDateTime = LocalDateTime.now();
-        }
-
-        List<Report> results = reportRepository.findByUpdatedDateBetweenOrderByUpdatedDateDesc(startDateTime, endDateTime);
-        List<ReportForm> reports = setReportForm(results);
-        return reports;
     }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    public List<Report> findAllByOrderByUpdatedDateDesc();
     @Query("SELECT r FROM Report r WHERE r.updatedDate BETWEEN :start AND :end ORDER BY r.updatedDate DESC")
     public List<Report> findByUpdatedDateBetweenOrderByUpdatedDateDesc(
             @Param("start") LocalDateTime startDateTime,

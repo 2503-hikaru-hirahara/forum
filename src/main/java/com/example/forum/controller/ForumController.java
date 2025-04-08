@@ -28,12 +28,13 @@ public class ForumController {
      * 投稿内容表示処理
      */
     @GetMapping
-    public ModelAndView top() {
+    public ModelAndView top(@RequestParam (name = "start", required = false) LocalDate start,
+                            @RequestParam (name = "end", required = false) LocalDate end) {
         ModelAndView mav = new ModelAndView();
         // form用の空のentityを準備
         CommentForm commentForm = new CommentForm();
-        // 投稿を全件取得
-        List<ReportForm> contentData = reportService.findAllReport();
+        // 投稿を日付で絞り込み取得
+        List<ReportForm> contentData = reportService.findByUpdatedDateBetween(start, end);
         // コメントを全件取得
         List<CommentForm> textData = commentService.findAllComment();
         // 画面遷移先を指定
@@ -135,10 +136,10 @@ public class ForumController {
                                 BindingResult result) {
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
-            List<ReportForm> contentData = reportService.findAllReport();
+            //List<ReportForm> contentData = reportService.findAllReport();
             List<CommentForm> textData = commentService.findAllComment();
             mav.setViewName("top");
-            mav.addObject("contents", contentData);
+            //mav.addObject("contents", contentData);
             mav.addObject("texts", textData);
             mav.addObject("formModel", commentForm);
             return mav;
@@ -192,29 +193,5 @@ public class ForumController {
         commentService.saveComment(comment);
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
-    }
-
-    /*
-     * 投稿内容表示処理(日付で絞り込み)
-     */
-    @GetMapping("/search")
-    public ModelAndView searchByDate(@RequestParam (name = "start", required = false) LocalDate start,
-                                     @RequestParam (name = "end", required = false) LocalDate end) {
-        ModelAndView mav = new ModelAndView();
-        // form用の空のentityを準備
-        CommentForm commentForm = new CommentForm();
-        // 投稿を日付で絞り込み取得
-        List<ReportForm> contentData = reportService.findByUpdatedDateBetween(start, end);
-        // コメントを全件取得
-        List<CommentForm> textData = commentService.findAllComment();
-        // 画面遷移先を指定
-        mav.setViewName("/top");
-        // 投稿データオブジェクトを保管
-        mav.addObject("contents", contentData);
-        // コメントデータオブジェクトを保管
-        mav.addObject("texts", textData);
-        // 準備した空のFormを保管
-        mav.addObject("formModel", commentForm);
-        return mav;
     }
 }
